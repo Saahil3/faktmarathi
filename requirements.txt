@@ -1,0 +1,5 @@
+easyocr
+Pillow
+Flask
+requests
+PyPDF2
