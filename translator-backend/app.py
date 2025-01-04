@@ -1,15 +1,17 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import requests
 from PyPDF2 import PdfReader
 import easyocr
+from pptx import Presentation
+from io import BytesIO
 
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
 # Hugging Face API details
-TRANSLATE_URL = "https://sepioo-facebook-translation.hf.space/v1/translate"
+TRANSLATE_URL = "https://sepioo-facebook-translation.hf.space/translate"
 HEADERS = {"Content-Type": "application/json"}
 
 # Function to translate text using Hugging Face API
@@ -24,7 +26,6 @@ def translate_text(input_text, from_language="en", to_language="mr"):
 
     if response.status_code == 200:
         result = response.json()
-        print("API Response:", result)  # Debugging the API response
         translated_text = result.get("translate", "")
         if not translated_text:
             raise Exception("No translation available in the response.")
@@ -53,6 +54,22 @@ def extract_text_from_image(image_file):
     if not extracted_text.strip():
         raise ValueError("No text found in the image.")
     return extracted_text
+
+# Function to extract and translate text from a PPT file
+def translate_ppt(input_ppt, from_language="en", to_language="mr"):
+    presentation = Presentation(input_ppt)
+    for slide in presentation.slides:
+        for shape in slide.shapes:
+            if hasattr(shape, "text"):
+                original_text = shape.text
+                if original_text.strip():  # Translate only if text exists
+                    translated_text = translate_text(original_text, from_language, to_language)
+                    shape.text = translated_text
+    # Save the modified PPT to a BytesIO object
+    output_ppt = BytesIO()
+    presentation.save(output_ppt)
+    output_ppt.seek(0)  # Rewind to the beginning of the file-like object
+    return output_ppt
 
 # Endpoint for text translation
 @app.route('/translate-text', methods=['POST'])
@@ -99,6 +116,23 @@ def translate_image_endpoint():
         extracted_text = extract_text_from_image(image_file)
         translated_text = translate_text(extracted_text)
         return jsonify({'translated_text': translated_text})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Endpoint for PowerPoint translation
+@app.route('/translate-ppt', methods=['POST'])
+def translate_ppt_endpoint():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part in the request'}), 400
+
+    ppt_file = request.files['file']
+    if ppt_file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+
+    try:
+        # Translate the PPT and return it as a file
+        translated_ppt = translate_ppt(ppt_file, from_language="en", to_language="mr")
+        return send_file(translated_ppt, as_attachment=True, download_name="translated_ppt.pptx", mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation")
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

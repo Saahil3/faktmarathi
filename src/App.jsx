@@ -6,6 +6,7 @@ export default function App() {
   const [text, setText] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [documentFile, setDocumentFile] = useState(null);
+  const [pptFile, setPptFile] = useState(null);
   const [translatedText, setTranslatedText] = useState("");
   const [activeTab, setActiveTab] = useState("text"); // To manage the active tab
 
@@ -56,6 +57,30 @@ export default function App() {
     }
   };
 
+  // Handle PPT Translation
+  const handlePptTranslate = async () => {
+    const formData = new FormData();
+    formData.append("file", pptFile);
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:5000/translate-ppt",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" }, responseType: 'blob' }
+      );
+
+      // Create a URL for the translated PPT file and trigger download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'translated_ppt.pptx');
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error("Error translating PPT:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-8">
       <h1 className="text-4xl font-bold mb-6">Marathi Translator</h1>
@@ -64,9 +89,7 @@ export default function App() {
       <div className="flex space-x-4 mb-6">
         <button
           className={`px-6 py-2 text-lg font-medium rounded-md ${
-            activeTab === "text"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-300 text-gray-700"
+            activeTab === "text" ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"
           }`}
           onClick={() => setActiveTab("text")}
         >
@@ -74,9 +97,7 @@ export default function App() {
         </button>
         <button
           className={`px-6 py-2 text-lg font-medium rounded-md ${
-            activeTab === "image"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-300 text-gray-700"
+            activeTab === "image" ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"
           }`}
           onClick={() => setActiveTab("image")}
         >
@@ -84,38 +105,43 @@ export default function App() {
         </button>
         <button
           className={`px-6 py-2 text-lg font-medium rounded-md ${
-            activeTab === "document"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-300 text-gray-700"
+            activeTab === "document" ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"
           }`}
           onClick={() => setActiveTab("document")}
         >
           Document
         </button>
+        <button
+          className={`px-6 py-2 text-lg font-medium rounded-md ${
+            activeTab === "ppt" ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"
+          }`}
+          onClick={() => setActiveTab("ppt")}
+        >
+          PPT
+        </button>
       </div>
 
       {/* Text Translation */}
       {activeTab === "text" && (
-  <div className="w-full max-w-2xl p-6 bg-white rounded-md shadow-md">
-    <h2 className="text-xl font-semibold mb-4">Translate Text</h2>
-    <div className="flex flex-col space-y-4">
-      <textarea
-        className="w-full p-4 border border-gray-300 rounded-md"
-        rows="5"
-        placeholder="Enter text to translate..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      ></textarea>
-      <button
-        className="w-full py-2 bg-blue-600 text-white rounded-md"
-        onClick={handleTextTranslate}
-      >
-        Translate Text
-      </button>
-    </div>
-  </div>
-)}
-
+        <div className="w-full max-w-2xl p-6 bg-white rounded-md shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Translate Text</h2>
+          <div className="flex flex-col space-y-4">
+            <textarea
+              className="w-full p-4 border border-gray-300 rounded-md"
+              rows="5"
+              placeholder="Enter text to translate..."
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            ></textarea>
+            <button
+              className="w-full py-2 bg-blue-600 text-white rounded-md"
+              onClick={handleTextTranslate}
+            >
+              Translate Text
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Image Translation */}
       {activeTab === "image" && (
@@ -151,6 +177,25 @@ export default function App() {
             onClick={handleDocumentTranslate}
           >
             Translate Document
+          </button>
+        </div>
+      )}
+
+      {/* PPT Translation */}
+      {activeTab === "ppt" && (
+        <div className="w-full max-w-2xl p-6 bg-white rounded-md shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Translate PPT</h2>
+          <input
+            type="file"
+            accept=".pptx"
+            onChange={(e) => setPptFile(e.target.files[0])}
+            className="w-full p-4 border border-gray-300 rounded-md mb-4"
+          />
+          <button
+            className="w-full py-2 bg-blue-600 text-white rounded-md"
+            onClick={handlePptTranslate}
+          >
+            Translate PPT
           </button>
         </div>
       )}
