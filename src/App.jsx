@@ -14,7 +14,7 @@ export default function App() {
   const handleTextTranslate = async () => {
     try {
       const response = await axios.post(
-        "https://faktmarathi.onrender.com/translate-text",
+        "http://faktmarathi.onrender.com/translate-text",
         { text }
       );
       setTranslatedText(response.data.translated_text);
@@ -30,7 +30,7 @@ export default function App() {
 
     try {
       const response = await axios.post(
-        "https://faktmarathi.onrender.com/translate-image",
+        "http://faktmarathi.onrender.com/translate-image",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -47,7 +47,7 @@ export default function App() {
 
     try {
       const response = await axios.post(
-        "https://faktmarathi.onrender.com/translate-document",
+        "http://faktmarathi.onrender.com/translate-document",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -64,7 +64,7 @@ export default function App() {
 
     try {
       const response = await axios.post(
-        "https://faktmarathi.onrender.com/translate-ppt",
+        "http://faktmarathi.onrender.com/translate-ppt",
         formData,
         { headers: { "Content-Type": "multipart/form-data" }, responseType: 'blob' }
       );
