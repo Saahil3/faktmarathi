@@ -8,7 +8,7 @@ from io import BytesIO
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": ["https://faktmarathi.vercel.app/"]}})
 
 # Hugging Face API details
 TRANSLATE_URL = "https://sepioo-facebook-translation.hf.space/translate"
