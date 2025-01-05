@@ -6,4 +6,3 @@ requests
 PyPDF2
 gunicorn
 python-pptx
-io
