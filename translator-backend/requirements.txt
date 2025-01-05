@@ -1,6 +1,7 @@
 easyocr
 Pillow
 Flask
+flask_cors
 requests
 PyPDF2
 gunicorn
