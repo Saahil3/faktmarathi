@@ -5,3 +5,5 @@ flask_cors
 requests
 PyPDF2
 gunicorn
+pptx
+io
