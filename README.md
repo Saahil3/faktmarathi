@@ -1,8 +1,27 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🚀 Fakt Marathi Translator
 
-Currently, two official plugins are available:
+Welcome to **Fakt Marathi Translator**! A powerful translation service designed to seamlessly translate text, documents (PDF, PPT), and images from English to Marathi. Whether you're translating a document, extracting text from an image, or even translating presentations, we've got you covered! 🌟
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠 Features
+
+- **Text Translation** ✍️
+- **Document Translation (PDF)** 📄
+- **Image Translation** 📸
+- **PowerPoint Translation** 📊
+- **Fast and Reliable** ⚡
+
+## 💻 Technologies Used
+
+- **React**: Frontend framework for developing the app
+- **Flask**: Backend framework for building a lightweight server
+- **Hugging Face API**: For accurate and efficient text translations
+- **PyPDF2**: PDF text extraction 📝
+- **EasyOCR**: Optical character recognition for images 🖼️
+- **python-pptx**: Working with PowerPoint files 🔽
+
+
+
+---
+
+Let's make translations easier, faster, and more accessible for everyone! 🌍💬
